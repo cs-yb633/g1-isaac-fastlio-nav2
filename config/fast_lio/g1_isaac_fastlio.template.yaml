@@ -1,0 +1,49 @@
+# FAST-LIO configuration template for the G1 Isaac Sim proxy workflow.
+#
+# Different FAST-LIO / FAST-LIO2 / localization forks use different YAML keys.
+# Treat this file as a checklist rather than a guaranteed drop-in config.
+
+common:
+  lid_topic: "/g1/lidar_points"
+  imu_topic: "/g1/imu"
+  time_sync_en: false
+  time_offset_lidar_to_imu: 0.0
+
+preprocess:
+  # Confirm the correct lidar_type in your FAST-LIO fork.
+  # Common examples in some forks:
+  #   1: AVIA
+  #   2: Velodyne
+  #   3: Ouster
+  #   4: Livox custom
+  lidar_type: 2
+  scan_line: 32
+  blind: 0.5
+  timestamp_unit: 0
+
+mapping:
+  acc_cov: 0.1
+  gyr_cov: 0.1
+  b_acc_cov: 0.0001
+  b_gyr_cov: 0.0001
+  fov_degree: 180.0
+  det_range: 100.0
+  extrinsic_est_en: false
+
+  # IMPORTANT:
+  # These are placeholders. FAST-LIO usually expects LiDAR-to-IMU extrinsics.
+  # Derive the real transform from your Isaac Sim sensor placement.
+  extrinsic_T: [0.0, 0.0, 0.0]
+  extrinsic_R: [1.0, 0.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 0.0, 1.0]
+
+publish:
+  path_en: true
+  scan_publish_en: true
+  dense_publish_en: true
+  scan_bodyframe_pub_en: true
+
+pcd_save:
+  pcd_save_en: false
+  interval: -1

@@ -1,0 +1,55 @@
+# ROS 2 build output
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Colcon / ament
+.colcon/
+
+# ROS bags and databases
+*.bag
+*.db3
+*.mcap
+metadata.yaml
+
+# Generated maps and point clouds
+*.pcd
+*.ply
+*.las
+*.e57
+*.bt
+*.pgm
+*.yaml.tmp
+
+# Isaac Sim / USD large scene files and cache
+*.usd
+*.usda
+*.usdc
+*.bak
+*.cache
+*.log
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets / local env
+.env
+*.key
+*.pem
+*.crt
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.7z

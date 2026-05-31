@@ -1,0 +1,46 @@
+# Nav2 parameter template for future G1 + FAST-LIO integration.
+# This is not yet a finished drop-in config. It records the intended direction.
+
+amcl:
+  ros__parameters:
+    use_sim_time: true
+    # AMCL is intentionally not used in the FAST-LIO route.
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: true
+    global_frame: map
+    robot_base_frame: g1_base_link
+    odom_topic: /g1/odom
+
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    controller_frequency: 10.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    odom_topic: /g1/odom
+
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    expected_planner_frequency: 1.0
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: odom
+      robot_base_frame: g1_base_link
+      rolling_window: true
+      width: 6
+      height: 6
+      resolution: 0.05
+      # Future route: use voxel/pointcloud obstacle layer from /g1/lidar_points.
+
+_global_note: >
+  For the FAST-LIO route, the key unresolved part is producing a clean
+  map -> odom -> g1_base_link TF tree. Do not enable AMCL and FAST-LIO TF
+  publishers at the same time unless their frame responsibilities are clear.
