@@ -53,3 +53,7 @@ Thumbs.db
 *.tar
 *.tar.gz
 *.7z
+
+*.yaml.bak
+rosbag2_*/
+g1_real_readonly_*/

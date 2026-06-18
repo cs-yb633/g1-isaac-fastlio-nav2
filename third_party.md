@@ -29,3 +29,8 @@
 ## License Boundary
 
 本仓库中自写代码、脚本和 Markdown 文档默认采用 MIT License。第三方项目、模型、示例场景、论文代码、官方文档等保持其原始许可证。
+
+
+## v0.2 real-robot note
+
+The repository may mention Unitree SDK2 paths and official SLAM/navigation concepts for integration notes, but it does not redistribute Unitree SDK2 source code, official G1 assets, or official navigation packages. Install those from official Unitree sources and follow their licenses.

@@ -44,3 +44,16 @@ g1_proxy_bridge 接口抽象
 - `g1_proxy_bridge` 已能抽象 `/g1/*` 接口；
 - FAST-LIO 建图测试已跑通；
 - 下一步是把 FAST-LIO 定位输出接入 Nav2。
+
+
+## v0.2 extension
+
+The project has been extended from a simulation-only workflow to a simulation-to-real workflow.
+
+The real G1 stage is intentionally read-only first:
+
+```text
+wired DDS receive -> rosbag record -> point cloud/map visualization -> offline SLAM/map generation
+```
+
+The real robot should not receive movement commands during this phase.

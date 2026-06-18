@@ -111,3 +111,37 @@ build/install/log
 截图
 小型示例参数
 ```
+
+
+## Real G1 DDS point cloud is zero
+
+Current project decision: treat WiFi as useful for `ping` / `ssh`, but prefer wired connection for DDS sensor data.
+
+Checklist:
+
+```bash
+ip addr show enp6s0
+printenv | grep ROS_DOMAIN_ID
+ros2 topic list
+ros2 topic hz <pointcloud_topic>
+```
+
+Do not start official navigation or locomotion commands while debugging DDS reception.
+
+## Accidentally connected a motion command path
+
+Stop immediately:
+
+```bash
+Ctrl+C
+```
+
+Then inspect running nodes:
+
+```bash
+ros2 node list
+ros2 topic info /cmd_vel
+ros2 topic info /g1/cmd_vel
+```
+
+During v0.2, real-robot work should stay read-only.

@@ -114,3 +114,38 @@ test_01:    约 47.65 s，约 131.3 MiB
 - 在 RViz 中发送 2D Nav Goal；
 - Isaac Sim 中 G1 完成 A → B 目标点导航；
 - 梳理实机迁移路线。
+
+
+## v0.2 update: Real G1 read-only transition
+
+The project now includes a second-stage real-robot transition route.
+
+Key decisions:
+
+- Keep the 3090 workstation for Isaac Sim, FAST-LIO/Nav2 simulation, and offline processing.
+- Use the 5060Ti lab workstation for real G1 connection and data collection.
+- Real-robot work starts with wired DDS data reception, not movement control.
+- WiFi is treated as useful for ping/ssh but not the default path for stable DDS point cloud reception.
+- Do not run official navigation or locomotion commands during the v0.2 data stage.
+- The immediate target is to record stable bags and visualize point cloud / map data.
+
+Known paths / setup notes:
+
+```text
+5060Ti:
+  ~/G1_SLAM
+  g1_slam
+  wired NIC example: enp6s0
+
+G1 onboard:
+  ~/unitree_sdk2-main
+  ~/unitree_sdk2_python
+```
+
+Next verification items:
+
+- actual real G1 PointCloud2 topic name
+- actual real G1 IMU topic name
+- whether odom/pose is available from official SLAM
+- DDS domain / network interface settings
+- first stable bag name and duration

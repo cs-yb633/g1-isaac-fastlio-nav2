@@ -1,37 +1,38 @@
 # Roadmap
 
-## V0.1 Current Release
+## v0.1: Isaac Sim G1 proxy workflow
 
-- Organize project documentation.
-- Provide `g1_proxy_bridge` ROS 2 package.
-- Provide FAST-LIO and Nav2 configuration templates.
-- Provide troubleshooting and reproducibility scripts.
+- [x] Import Unitree G1 URDF into Isaac Sim
+- [x] Attach G1 visual model to Nova Carter motion proxy
+- [x] Hide Carter visual elements and keep its motion/sensor capability
+- [x] Publish G1-style `/g1/*` ROS 2 interface
+- [x] Use 3D LiDAR + IMU topics for FAST-LIO mapping tests
 
-## V0.2 FAST-LIO Localization Bridge
+## v0.2: Real G1 read-only data pipeline
 
-Planned:
+- [x] Split workstation roles: 3090 for simulation, 5060Ti for real robot connection
+- [x] Prefer wired DDS over WiFi for real point cloud reception
+- [x] Add read-only network / topic check scripts
+- [x] Add read-only rosbag recording templates
+- [x] Add safety notes forbidding real movement commands during data stage
+- [ ] Confirm actual real G1 PointCloud2, IMU, odom/pose topic names
+- [ ] Record first stable real G1 sensor bag
+- [ ] Replay real bag offline on 3090/5060Ti
+- [ ] Run FAST-LIO or official SLAM pipeline on recorded data
+- [ ] Export 3D map and generate 2D `pgm/yaml`
 
-- Add node to convert FAST-LIO odometry output into Nav2-compatible TF.
-- Clarify frame responsibility:
+## v0.3: Localization and Nav2 in simulation
 
-```text
-map → odom → g1_base_link
-```
+- [ ] Convert FAST-LIO/SLAM output to stable odom / map interface
+- [ ] Align TF tree: `map -> odom -> g1_base_link -> sensors`
+- [ ] Configure Nav2 costmaps with generated 2D map
+- [ ] Send RViz goal and verify A → B navigation in Isaac Sim
+- [ ] Add velocity safety layer for future real-robot execution
 
-- Add launch file for FAST-LIO + G1 proxy bridge.
+## v0.4: Real G1 navigation preparation
 
-## V0.3 Minimal Nav2 Demo
-
-Planned:
-
-- Add minimal Nav2 launch/config.
-- Use FAST-LIO localization instead of AMCL.
-- Send RViz 2D Nav Goal and drive `/g1/cmd_vel`.
-
-## V0.4 Real G1 Migration Notes
-
-Planned:
-
-- Replace Carter proxy with Unitree G1 real robot interface.
-- Map `/g1/cmd_vel`, `/g1/odom`, `/g1/lidar_points`, `/g1/imu` to real sensor/control topics.
-- Record real-world bags and compare with Isaac Sim.
+- [ ] Keep Nav2 output disconnected from real locomotion by default
+- [ ] Add command gate / deadman switch / max velocity limiter
+- [ ] Test planning output with logs only
+- [ ] Connect to G1 LocoClient only after safety review
+- [ ] Replace Carter proxy with real execution layer gradually

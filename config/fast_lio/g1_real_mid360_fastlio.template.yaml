@@ -1,0 +1,35 @@
+# Template only. Verify actual real G1 / Livox / Unitree topic names before use.
+# This file is intentionally not tied to a specific FAST-LIO fork.
+
+common:
+  lid_topic: "/g1/lidar_points"
+  imu_topic: "/g1/imu"
+  time_sync_en: false
+
+preprocess:
+  lidar_type: 1          # Adjust according to FAST-LIO fork and sensor type.
+  scan_line: 4           # Mid360-like placeholder. Verify with real sensor.
+  blind: 0.5
+  timestamp_unit: 3
+
+mapping:
+  acc_cov: 0.1
+  gyr_cov: 0.1
+  b_acc_cov: 0.0001
+  b_gyr_cov: 0.0001
+  fov_degree: 360.0
+  det_range: 100.0
+
+publish:
+  path_en: true
+  scan_publish_en: true
+  dense_publish_en: true
+  scan_bodyframe_pub_en: false
+
+pcd_save:
+  pcd_save_en: true
+  interval: -1
+
+notes:
+  - "v0.2 target: run offline on recorded bags before any real-time control."
+  - "Do not connect localization output to real locomotion during read-only data stage."

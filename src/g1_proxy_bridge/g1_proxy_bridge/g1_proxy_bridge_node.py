@@ -2,13 +2,16 @@
 """Expose Isaac Sim Carter topics as Unitree G1-style /g1/* interfaces.
 
 This node is intentionally simple:
-- /g1/cmd_vel is forwarded to Carter's /cmd_vel.
+- /g1/cmd_vel can be forwarded to Carter's /cmd_vel.
 - Carter odometry is republished as /g1/odom with G1 frame names.
 - Carter PointCloud2 and IMU messages are republished as /g1/lidar_points and /g1/imu.
 - TF is published as odom -> g1_base_link plus static sensor frames.
 
 The node does not implement real Unitree G1 locomotion. It is a simulation
 adapter for the "G1 visual model + hidden Carter motion proxy" workflow.
+
+v0.2 adds a safety parameter:
+- enable_cmd_vel_forwarding=false keeps the node read-only for diagnostics.
 """
 
 from __future__ import annotations
@@ -89,6 +92,13 @@ class G1ProxyBridge(Node):
         self.declare_parameter('lidar_frame', 'g1_lidar_link')
         self.declare_parameter('imu_frame', 'g1_imu_link')
 
+        # Safety / behavior parameters.
+        self.declare_parameter('enable_cmd_vel_forwarding', True)
+        self.declare_parameter('publish_odom_tf', True)
+        self.declare_parameter('publish_static_sensor_tf', True)
+        self.declare_parameter('static_tf_republish_period_sec', 2.0)
+        self.declare_parameter('log_throttled_cmd_vel_drop_sec', 5.0)
+
         # Approximate sensor transforms from the current Isaac Sim proxy scene.
         self.declare_parameter('lidar_xyz', [-0.232, 0.0, 0.526])
         self.declare_parameter('lidar_rpy', [0.0, 0.0, 0.0])
@@ -109,6 +119,12 @@ class G1ProxyBridge(Node):
         self.lidar_frame = self.get_parameter('lidar_frame').value
         self.imu_frame = self.get_parameter('imu_frame').value
 
+        self.enable_cmd_vel_forwarding = bool(self.get_parameter('enable_cmd_vel_forwarding').value)
+        self.publish_odom_tf = bool(self.get_parameter('publish_odom_tf').value)
+        self.publish_static_sensor_tf = bool(self.get_parameter('publish_static_sensor_tf').value)
+        self.static_tf_republish_period_sec = float(self.get_parameter('static_tf_republish_period_sec').value)
+        self.log_throttled_cmd_vel_drop_sec = float(self.get_parameter('log_throttled_cmd_vel_drop_sec').value)
+
         self.lidar_xyz = list(self.get_parameter('lidar_xyz').value)
         self.lidar_rpy = list(self.get_parameter('lidar_rpy').value)
         self.imu_xyz = list(self.get_parameter('imu_xyz').value)
@@ -126,16 +142,22 @@ class G1ProxyBridge(Node):
 
         self.tf_broadcaster = TransformBroadcaster(self)
         self.static_tf_broadcaster = StaticTransformBroadcaster(self)
-        self.publish_static_sensor_transforms()
+        if self.publish_static_sensor_tf:
+            self.publish_static_sensor_transforms()
+            if self.static_tf_republish_period_sec > 0.0:
+                self.static_timer = self.create_timer(
+                    self.static_tf_republish_period_sec,
+                    self.publish_static_sensor_transforms,
+                )
 
-        # Re-send static transforms a few times after startup to make RViz/debugging easier.
-        self.static_timer = self.create_timer(2.0, self.publish_static_sensor_transforms)
+        self._last_cmd_vel_drop_log_time = None
 
         self.get_logger().info('G1 proxy bridge started.')
         self.get_logger().info(f'Command: {self.g1_cmd_vel_topic} -> {self.carter_cmd_vel_topic}')
         self.get_logger().info(f'Odom:    {self.carter_odom_topic} -> {self.g1_odom_topic}')
         self.get_logger().info(f'LiDAR:   {self.carter_lidar_topic} -> {self.g1_lidar_topic}')
         self.get_logger().info(f'IMU:     {self.carter_imu_topic} -> {self.g1_imu_topic}')
+        self.get_logger().info(f'enable_cmd_vel_forwarding={self.enable_cmd_vel_forwarding}')
 
     def publish_static_sensor_transforms(self) -> None:
         """Publish base->sensor transforms."""
@@ -156,16 +178,37 @@ class G1ProxyBridge(Node):
         )
         self.static_tf_broadcaster.sendTransform([lidar_tf, imu_tf])
 
+    def _should_log_cmd_vel_drop(self) -> bool:
+        now = self.get_clock().now()
+        if self._last_cmd_vel_drop_log_time is None:
+            self._last_cmd_vel_drop_log_time = now
+            return True
+        elapsed = (now - self._last_cmd_vel_drop_log_time).nanoseconds / 1e9
+        if elapsed >= self.log_throttled_cmd_vel_drop_sec:
+            self._last_cmd_vel_drop_log_time = now
+            return True
+        return False
+
     def on_cmd_vel(self, msg: Twist) -> None:
-        """Forward G1 cmd_vel to the Carter motion proxy."""
+        """Forward G1 cmd_vel to the Carter motion proxy when enabled."""
+        if not self.enable_cmd_vel_forwarding:
+            if self._should_log_cmd_vel_drop():
+                self.get_logger().warn(
+                    'Dropped /g1/cmd_vel because enable_cmd_vel_forwarding is false. '
+                    'This read-only mode is intended for safe diagnostics.'
+                )
+            return
         self.cmd_vel_pub.publish(msg)
 
     def on_odom(self, msg: Odometry) -> None:
-        """Republish Carter odometry as G1 odometry and broadcast odom->base TF."""
+        """Republish Carter odometry as G1 odometry and optionally broadcast odom->base TF."""
         out = copy.deepcopy(msg)
         out.header.frame_id = self.odom_frame
         out.child_frame_id = self.base_frame
         self.odom_pub.publish(out)
+
+        if not self.publish_odom_tf:
+            return
 
         tf = TransformStamped()
         tf.header.stamp = out.header.stamp

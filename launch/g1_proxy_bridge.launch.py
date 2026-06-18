@@ -1,9 +1,30 @@
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    enable_cmd_vel_forwarding = LaunchConfiguration('enable_cmd_vel_forwarding')
+    publish_odom_tf = LaunchConfiguration('publish_odom_tf')
+    publish_static_sensor_tf = LaunchConfiguration('publish_static_sensor_tf')
+
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'enable_cmd_vel_forwarding',
+            default_value='true',
+            description='Forward /g1/cmd_vel to Carter /cmd_vel. Set false for read-only diagnostics.',
+        ),
+        DeclareLaunchArgument(
+            'publish_odom_tf',
+            default_value='true',
+            description='Publish odom -> g1_base_link TF from republished odometry.',
+        ),
+        DeclareLaunchArgument(
+            'publish_static_sensor_tf',
+            default_value='true',
+            description='Publish g1_base_link -> sensor static transforms.',
+        ),
         Node(
             package='g1_proxy_bridge',
             executable='g1_proxy_bridge_node',
@@ -27,6 +48,11 @@ def generate_launch_description():
                 'base_frame': 'g1_base_link',
                 'lidar_frame': 'g1_lidar_link',
                 'imu_frame': 'g1_imu_link',
+
+                # Safety / behavior toggles.
+                'enable_cmd_vel_forwarding': enable_cmd_vel_forwarding,
+                'publish_odom_tf': publish_odom_tf,
+                'publish_static_sensor_tf': publish_static_sensor_tf,
 
                 # Approximate transforms measured from the current Isaac Sim proxy setup.
                 'lidar_xyz': [-0.232, 0.0, 0.526],

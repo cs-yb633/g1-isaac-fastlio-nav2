@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>g1_proxy_bridge</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>ROS 2 bridge that exposes Isaac Sim Carter topics as Unitree G1-style /g1/* interfaces.</description>
-  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <maintainer email="replace-with-your-email@example.com">cs-yb633</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_python</buildtool_depend>
