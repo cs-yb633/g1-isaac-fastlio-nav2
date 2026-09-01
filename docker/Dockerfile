@@ -7,6 +7,7 @@ ARG LOCAL_UID=1001
 ARG LOCAL_GID=1001
 ARG UNITREE_ROS2_REV=668d1ec5a05d1c38d3306bdca7d59f2ba3581a88
 ARG CYCLONEDDS_REV=5041f3560c088c99e5088b2b8520b69169621196
+ARG UNITREE_SDK2_PYTHON_REV=65691c8a8bc53b98d3976dba4dbf9d5d20b2e7f5
 
 ENV ROS_DISTRO=humble
 
@@ -18,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     iproute2 \
     iputils-ping \
     python3-colcon-common-extensions \
+    python3-pip \
     python3-rosdep \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup \
@@ -46,6 +48,15 @@ RUN git clone https://github.com/unitreerobotics/unitree_ros2.git /opt/unitree_r
     && source install/setup.bash \
     && colcon build --merge-install --packages-select unitree_go unitree_hg unitree_api \
     && rm -rf build log .git src/cyclonedds/.git
+
+# Install the pinned official Python SDK for the isolated manual FSM tool.
+# --no-deps avoids pulling OpenCV, which the G1 LocoClient path does not use.
+RUN python3 -m pip install --no-cache-dir cyclonedds==0.10.2 \
+    && git clone https://github.com/unitreerobotics/unitree_sdk2_python.git \
+        /opt/unitree_sdk2_python \
+    && git -C /opt/unitree_sdk2_python checkout "${UNITREE_SDK2_PYTHON_REV}" \
+    && python3 -m pip install --no-cache-dir --no-deps /opt/unitree_sdk2_python \
+    && rm -rf /opt/unitree_sdk2_python/.git
 
 RUN groupadd --gid "${LOCAL_GID}" developer \
     && useradd --uid "${LOCAL_UID}" --gid "${LOCAL_GID}" --create-home --shell /bin/bash developer

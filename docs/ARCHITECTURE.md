@@ -20,7 +20,7 @@
   -> /scan_raw   [仅在已核验 livox_frame 外参可用时]
 ```
 
-所有节点都只有订阅传感器/里程计和发布派生 TF/扫描的权限。工程中没有运动话题发布者、运动服务客户端、LocoClient 或 FSM 调用。
+正常 sensing/navigation bringup 只有订阅传感器/里程计和发布派生 TF/扫描的权限，不包含运动话题发布者或自动 FSM 调用。`g1_nav_control` 中单独提供人工 `g1_fsm_tool`：默认 dry-run，必须一次性显式执行，不被任何 launch 启动，也没有速度接口。
 
 `g1_nav_adapter` 还提供只读 `dog_odom_probe` 和离线 `dog_odom_analyze`。probe 与 TF adapter 复用集中校验规则；CSV 运行数据不进入 Git。TF adapter 默认等待连续 5 帧合法数据后才开始发布，但不会平均、替换或重写任何样本。
 

@@ -192,3 +192,9 @@ ros2 topic echo /scan_raw --once
 启动前 50 帧诊断、限时 recorder、CSV 字段、analyzer 输出和 startup qualification 行为见：
 
 - [Odometry Characterization](ODOMETRY_CHARACTERIZATION.md)
+
+## 10. 手动 FSM 工具
+
+该工具不属于 sensing bringup，默认只打印 dry-run。模式、风险和显式执行门见：
+
+- [手动 FSM 工具](SAFETY_FSM.md)

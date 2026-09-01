@@ -19,6 +19,7 @@ Unitree G1 实机二维建图与 Nav2 导航工程。当前完成 Gate 1 只读�
 - [TF 树与约束](docs/TF_TREE.md)
 - [安全门状态](docs/GATES.md)
 - [`/dog_odom` 只读记录与分析](docs/ODOMETRY_CHARACTERIZATION.md)
+- [手动 FSM 工具与安全约束](docs/SAFETY_FSM.md)
 - [2026-09-01 Gate 2 前置复核](docs/audits/2026-09-01-gate2-preflight.md)
 
 ## 当前状态
@@ -29,7 +30,7 @@ Unitree G1 实机二维建图与 Nav2 导航工程。当前完成 Gate 1 只读�
 - 2026-08-31 已通过 `enp6s0` 完成一次实机只读审计；每次接机仍须重新验证接口和网络。
 - 已确认 `/dog_odom`（`odom -> robot_center`）和 `/utlidar/cloud_livox_mid360`（`livox_frame`）；机器人未发布 `/scan` 或 TF。
 - 已加入带 startup qualification 的平面里程计 TF 适配器、只读 CSV probe/analyzer 和点云转换启动文件；LiDAR 外参未知，因此 `/scan_raw` 尚不能宣称可用。
-- 从未发送运动指令；源码中没有控制发布者或运动服务客户端。
+- 尚未发送运动指令。源码新增了独立、默认 dry-run、不会被 bringup 自动启动的手动 FSM 工具；它不包含速度控制。
 
 ## 构建开发容器
 

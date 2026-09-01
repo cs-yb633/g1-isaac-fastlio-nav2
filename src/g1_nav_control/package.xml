@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>g1_nav_control</name>
+  <version>0.1.0</version>
+  <description>Explicitly guarded manual G1 FSM commissioning tool.</description>
+  <maintainer email="maintainers@example.invalid">G1 Nav maintainers</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

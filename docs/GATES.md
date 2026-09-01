@@ -12,7 +12,7 @@
 | 3C | TF-aligned dynamic scan validation | **BLOCKED by Gate 3A** | 只有权威外参建立后才能进行动态扫描验证 |
 | 4 | rosbag baseline | **PENDING / NOT OPEN** | 先完成 Gate 2B/2C；只允许记录，不包含动作自动化 |
 | 5 | offline SLAM Toolbox | **PENDING / NOT OPEN** | 依赖 Gate 3 和 Gate 4 数据；本阶段不启动 SLAM Toolbox |
-| 6 | keyboard motion | **FORBIDDEN / NOT OPEN** | 需要另行明确授权、现场监护和安全方案 |
+| 6 | keyboard motion | **FORBIDDEN / NOT OPEN** | 独立手动 FSM 工具已准备，但不开放速度或键盘运动；实机使用仍需现场监护和显式人工确认 |
 | 7+ | mapping / localization / Nav2 | **NOT OPEN** | 建图、定位和自主导航均未开放 |
 
 “代码完成”不等同于 Gate 通过。不得通过猜测外参、自动执行实验动作或接通控制接口绕过任何 Gate。
