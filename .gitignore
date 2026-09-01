@@ -1,0 +1,30 @@
+# Local/private source material
+G1 导航建图.pdf
+
+# ROS 2 / colcon outputs
+build/
+install/
+log/
+
+# Runtime data
+bags/
+recordings/
+runtime/
+maps/
+rosbag2_*/
+*.db3
+*.mcap
+*.pcd
+/dog_odom_*.csv
+
+# Local configuration and credentials
+.env
+.Xauthority
+*.log
+
+# Editors and Python
+.vscode/
+.idea/
+__pycache__/
+*.py[cod]
+.pytest_cache/

@@ -1,0 +1,22 @@
+services:
+  g1-nav:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        LOCAL_UID: "${LOCAL_UID:-1001}"
+        LOCAL_GID: "${LOCAL_GID:-1001}"
+    image: g1-nav:humble
+    network_mode: host
+    environment:
+      DISPLAY: "${DISPLAY:-:0}"
+      G1_NETWORK_INTERFACE: "${G1_NETWORK_INTERFACE:-enp6s0}"
+      ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-0}"
+    volumes:
+      - .:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: bash
+

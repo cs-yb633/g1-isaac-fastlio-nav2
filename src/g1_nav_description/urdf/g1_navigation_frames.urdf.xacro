@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="g1_navigation_frames">
+  <!--
+    Intentionally contains only the planar navigation root. robot_center and
+    livox_frame are omitted until their physical meanings and extrinsic are
+    verified. The odometry adapter supplies the dynamic robot_center residual.
+  -->
+  <link name="base_footprint"/>
+</robot>
