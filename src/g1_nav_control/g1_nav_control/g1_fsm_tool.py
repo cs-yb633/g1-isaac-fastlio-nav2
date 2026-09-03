@@ -17,11 +17,12 @@ class FsmTarget:
     warning: str
 
 
-# IDs below come from the pinned official unitree_sdk2_python G1 LocoClient.
+# IDs below come from the pinned official Unitree G1 LocoClient APIs.
 FSM_TARGETS = {
     "zero_torque": FsmTarget(0, "Torque may be removed and the robot may collapse."),
     "damp": FsmTarget(1, "The robot may lose posture and fall into damping mode."),
     "sit": FsmTarget(3, "The robot may execute a sitting transition."),
+    "standup": FsmTarget(4, "The robot may stand up and can move or fall."),
     "start": FsmTarget(500, "The robot may stand or enter locomotion-ready control."),
 }
 

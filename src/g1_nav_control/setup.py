@@ -15,11 +15,13 @@ setup(
     zip_safe=True,
     maintainer="G1 Nav maintainers",
     maintainer_email="maintainers@example.invalid",
-    description="Explicitly guarded manual G1 FSM commissioning tool.",
+    description="ROS 2 control utilities for G1 navigation.",
     license="Apache-2.0",
+    tests_require=["pytest"],
     entry_points={
         "console_scripts": [
             "g1_fsm_tool = g1_nav_control.g1_fsm_tool:main",
+            "g1_cmd_vel_executor = g1_nav_control.g1_cmd_vel_executor:main",
         ],
     },
 )
